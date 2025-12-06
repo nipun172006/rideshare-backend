@@ -1,0 +1,219 @@
+{
+  "info": {
+    "name": "RideShare Backend",
+    "description": "Postman collection for RideShare API (Spring Boot + MongoDB Atlas). Includes auth, user, and driver flows.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register USER",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"StrongPass123\",\n  \"role\": \"ROLE_USER\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Register DRIVER",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","register"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"driver2\",\n  \"password\": \"StrongPass123\",\n  \"role\": \"ROLE_DRIVER\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login USER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('USER_TOKEN', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"StrongPass123\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Login DRIVER",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('DRIVER_TOKEN', json.token);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","auth","login"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"driver2\",\n  \"password\": \"StrongPass123\"\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Request Ride",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();",
+                  "pm.environment.set('RIDE_ID', json.id);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{USER_TOKEN}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rides",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","rides"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pickupLocation\": \"Point A\",\n  \"dropLocation\": \"Point B\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List My Rides",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{USER_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/user/rides",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","user","rides"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Driver",
+      "item": [
+        {
+          "name": "List Pending Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/driver/rides/requests",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","driver","rides","requests"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Accept Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/driver/rides/{{RIDE_ID}}/accept",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","driver","rides", "{{RIDE_ID}}", "accept"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Complete Ride",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{DRIVER_TOKEN}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/rides/{{RIDE_ID}}/complete",
+              "host": ["{{baseUrl}}"],
+              "path": ["api","v1","rides", "{{RIDE_ID}}", "complete"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8081" }
+  ]
+}
