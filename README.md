@@ -1,6 +1,6 @@
 # RideShare Backend (Spring Boot + MongoDB Atlas)
 
-A complete RideShare backend implemented with Spring Boot 3.2.x and Java 21. It uses MongoDB Atlas for persistence and JWT-based stateless authentication. Follows a clean structure aligned with the student guide:
+A RideShare backend implemented with Spring Boot 3.2.x and Java 21. It uses MongoDB for persistence and JWT-based stateless authentication, with a layered application structure:
 - DTO -> Controller -> Service -> Repository
 - Global validation and exception handling
 - Role-based flows for `ROLE_USER` and `ROLE_DRIVER`
@@ -215,6 +215,7 @@ Tips:
 - Manually run items in order (Auth → User → Driver) or create a Postman folder-based run if preferred.
 
 ## Development Notes
+- This project originated as a course assignment; the repository history preserves that context.
 - Validation via Jakarta: `@NotBlank`, `@Size`, `@Pattern` on DTOs.
 - BCrypt for password hashing.
 - JWT carries `username` and `role`; HS256 using UTF-8 bytes of secret.
